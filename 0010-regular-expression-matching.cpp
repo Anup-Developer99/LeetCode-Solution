@@ -6,15 +6,17 @@ class Solution { public:
   int n=s.size();vector<char> dp(n+1,false);dp[0]=true;
   for(int j=1;j<=(int)p.size();++j) {
    if(p[j-1]=='*') {
-    dp[0]=dp[0] && j>=2 && p[j-2]!='*';
+    if(j<2) return false;
+    dp[0]=dp[0];
     for(int i=1;i<=n;++i) {
-     if(j<2) dp[i]=false;
-     else dp[i]=dp[i] || ((p[j-2]=='.'||p[j-2]==s[i-1]) && dp[i]);
+     bool matches=(p[j-2]=='.'||p[j-2]==s[i-1]);
+     dp[i]=dp[i]||(matches&&dp[i-1]);
     }
    } else {
     for(int i=n;i>=1;--i)dp[i]=(p[j-1]=='.'||p[j-1]==s[i-1])&&dp[i-1];
     dp[0]=false;
    }
-  }return dp[n];
+  }
+  return dp[n];
  }
 };
