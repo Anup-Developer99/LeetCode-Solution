@@ -1,22 +1,21 @@
-// LeetCode 10: Regular Expression Matching | O(m*n) time, O(n) space
+// LeetCode 10: Regular Expression Matching | O(m*n) time and space
 #include <bits/stdc++.h>
 using namespace std;
 class Solution { public:
  bool isMatch(string s,string p) {
-  int n=s.size();vector<char> dp(n+1,false);dp[0]=true;
-  for(int j=1;j<=(int)p.size();++j) {
-   if(p[j-1]=='*') {
-    if(j<2) return false;
-    dp[0]=dp[0];
-    for(int i=1;i<=n;++i) {
-     bool matches=(p[j-2]=='.'||p[j-2]==s[i-1]);
-     dp[i]=dp[i]||(matches&&dp[i-1]);
-    }
-   } else {
-    for(int i=n;i>=1;--i)dp[i]=(p[j-1]=='.'||p[j-1]==s[i-1])&&dp[i-1];
-    dp[0]=false;
+  int m=p.size(),n=s.size();
+  vector<vector<char>> dp(m+1,vector<char>(n+1,false));
+  dp[0][0]=true;
+  for(int i=2;i<=m;++i)if(p[i-1]=='*')dp[i][0]=dp[i-2][0];
+  for(int i=1;i<=m;++i)for(int j=1;j<=n;++j) {
+   if(p[i-1]=='*') {
+    dp[i][j]=dp[i-2][j];
+    char prev=p[i-2];
+    if(prev=='.'||prev==s[j-1])dp[i][j]=dp[i][j]||dp[i][j-1];
+   } else if(p[i-1]=='.'||p[i-1]==s[j-1]) {
+    dp[i][j]=dp[i-1][j-1];
    }
   }
-  return dp[n];
+  return dp[m][n];
  }
 };
